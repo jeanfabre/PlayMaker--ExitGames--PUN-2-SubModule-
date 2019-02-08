@@ -1,4 +1,4 @@
-# PlayMaker--ExitGames--PhotonUnityNetworking_U4.3.4-Library-
+# PlayMaker--ExitGames--PUN-2-SubModule-
 This is the submodule you can use in your project
 
 ##Instructions
@@ -7,13 +7,9 @@ This is the submodule you can use in your project
 - Add a new github "SubModule"
   - Point to the PlayMaker Utils repository: https://jeanfabre@github.com/jeanfabre/PlayMaker--Utils.git
   - The local repository path must be "Assets/PlayMaker Utils"
-- Add a new github "SubModule"
-  - Point to the PlayMaker Utils repository: https://github.com/jeanfabre/PlayMaker--ArrayMaker--U4.3.4-SubModule-.git
-  - The local repository path must be "Assets/PlayMaker Utils"
 - Add a new github "SubModule", 
-  - point to this repository: https://github.com/jeanfabre/PlayMaker--ExitGames--PhotonUnityNetworking_U4.3.4-Library-.git
-  - The local repository path must be "Assets/PlayMaker PUN"
+  - point to this repository: https://github.com/jeanfabre/PlayMaker--ExitGames--PlayMaker--ExitGames--PUN-2-SubModule-.git
+  - The local repository path must be "Assets/PlayMaker PUN 2"
   
 
-
-Now, everytime you work on your project, you can pull these three submodules, and you'll get the latest.
+Now, everytime you work on your project, you can pull these two submodules, and you'll get the latest.
