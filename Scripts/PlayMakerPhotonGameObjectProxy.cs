@@ -54,14 +54,15 @@ public class PlayMakerPhotonGameObjectProxy : MonoBehaviourPunCallbacks {
 			Debug.LogError("Working with photon network require that you add a 'PlayMaker Photon Proxy' component to the gameObject. You can do so from the menu 'PlayMaker Photon/components/Add photon proxy to scene'");
 			return;
 		}
-		
-		// get the proxy to set the debug flag.
-	 	PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
-		if (_proxy!=null)
-		{
-			debug = _proxy.debug;
-			LogMessageInfo = _proxy.LogMessageInfo;
-		}
+	
+        //TODO:	
+		//// get the proxy to set the debug flag.
+	 //	PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
+		//if (_proxy!=null)
+		//{
+		//	debug = _proxy.debug;
+		//	LogMessageInfo = _proxy.LogMessageInfo;
+		//}
 		
 		// get the Fsm for reference when sending events.
 		fsmProxy = go.GetComponent<PlayMakerFSM>();
@@ -69,8 +70,9 @@ public class PlayMakerPhotonGameObjectProxy : MonoBehaviourPunCallbacks {
 		{
 			return;
 		}
-		
-		_proxy.SanitizeGameObject(this.gameObject);
+	
+        //TODO:	
+	//	_proxy.SanitizeGameObject(this.gameObject);
 		
 	}// Awake
 	
