@@ -63,7 +63,15 @@ namespace HutongGames.PlayMaker.Pun2
         {Pun2Callbacks.OnJoinRandomFailed,              "PHOTON / ON JOIN RANDOM ROOM FAILED"},
         {Pun2Callbacks.OnLeftRoom,                      "PHOTON / ON LEFT ROOM"},
         {Pun2Callbacks.OnPlayerEnteredRoom,             "PHOTON / ON PLAYER ENTERED ROOM"},
-        {Pun2Callbacks.OnPlayerLeftRoom,                "PHOTON / ON PLAYER LEFT ROOM"}
+        {Pun2Callbacks.OnPlayerLeftRoom,                "PHOTON / ON PLAYER LEFT ROOM"},
+        {Pun2Callbacks.OnFriendListUpdate,              "PHOTON / ON FRIEND LIST UPDATE"},
+        {Pun2Callbacks.OnRoomListUpdate,                "PHOTON / ON ROOM LIST UPDATE"},
+        {Pun2Callbacks.OnRoomPropertiesUpdate,          "PHOTON / ON ROOM PROPERTIES UPDATE"},
+        {Pun2Callbacks.OnPlayerPropertiesUpdate,        "PHOTON / ON PLAYER PROPERTIES UPDATE"},
+        {Pun2Callbacks.OnLobbyStatisticsUpdate,         "PHOTON / ON LOBBY STATISTICS UPDATE"},
+        {Pun2Callbacks.OnMasterClientSwitched,          "PHOTON / ON MASTERCLIENT SWITCHED"},
+        {Pun2Callbacks.OnRegionListReceived,            "PHOTON / ON REGION LIST RECEIVED"},
+        {Pun2Callbacks. OnWebRpcResponse,               "PHOTON / ON WEBRPC RESPONSE"}
     };
 
 

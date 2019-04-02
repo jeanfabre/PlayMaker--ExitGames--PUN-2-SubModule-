@@ -78,6 +78,18 @@ namespace HutongGames.PlayMaker.Pun2
         public short LastJoinRandomRoomFailedReturnCode = 0;
         public string LastJoinRandomRoomFailedMessage = string.Empty;
 
+        public List<FriendInfo> LastFriendList;
+
+        public List<TypedLobbyInfo> lastlobbyStatistics; 
+
+        public List<RoomInfo> LastRoomList;
+
+        public ExitGames.Client.Photon.Hashtable LastRoomPropertiesThatChanged;
+
+        public ExitGames.Client.Photon.Hashtable LastPlayerPropertiesUpdate;
+
+        public ExitGames.Client.Photon.Hashtable LastRoomPropertiesUpdate;
+
         public RegionHandler LastRegionHandler;
 
 
@@ -378,29 +390,69 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnFriendListUpdate(List<FriendInfo> friendList)
         {
-            base.OnFriendListUpdate(friendList);
+            LastCallback = Pun2Callbacks.OnFriendListUpdate;
+            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+
+            LastFriendList = friendList;
+
+            _LastCallbackDataDebug.Clear();
+            _LastCallbackDataDebug.Add("Friend List", LastFriendList.ToStringFull());
+
+            BroadcastCallback();
         }
 
         public override void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
         {
-            base.OnLobbyStatisticsUpdate(lobbyStatistics);
+            LastCallback = Pun2Callbacks.OnLobbyStatisticsUpdate;
+            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+
+            lastlobbyStatistics = lobbyStatistics;
+
+            _LastCallbackDataDebug.Clear();
+            _LastCallbackDataDebug.Add("Lobby List", lastlobbyStatistics.ToStringFull());
+
+            BroadcastCallback();
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            base.OnMasterClientSwitched(newMasterClient);
+            LastCallback = Pun2Callbacks.OnMasterClientSwitched;
+            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+
+            lastMessagePhotonPlayer = newMasterClient;
+
+            _LastCallbackDataDebug.Clear();
+            _LastCallbackDataDebug.Add("New MasterClient", lastMessagePhotonPlayer.ToStringFull());
+
+            BroadcastCallback();
         }
 
         public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
         {
-            base.OnPlayerPropertiesUpdate(target, changedProps);
-        }
+            LastCallback = Pun2Callbacks.OnRoomListUpdate;
+            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
 
-       
+            lastMessagePhotonPlayer = target;
+            LastPlayerPropertiesUpdate = changedProps;
+
+            _LastCallbackDataDebug.Clear();
+            _LastCallbackDataDebug.Add("Player", target.ToStringFull());
+            _LastCallbackDataDebug.Add("Properties that changed", changedProps.ToStringFull());
+
+            BroadcastCallback();
+        }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            base.OnRoomListUpdate(roomList);
+            LastCallback = Pun2Callbacks.OnRoomListUpdate;
+            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+
+            LastRoomList = roomList;
+
+            _LastCallbackDataDebug.Clear();
+            _LastCallbackDataDebug.Add("Roomlist", LastRoomList.ToStringFull());
+
+            BroadcastCallback();
         }
 
         public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -408,10 +460,10 @@ namespace HutongGames.PlayMaker.Pun2
             LastCallback = Pun2Callbacks.OnRoomPropertiesUpdate;
             LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
 
-            LastWebRpcResponse = response;
+            LastRoomPropertiesThatChanged = propertiesThatChanged;
 
             _LastCallbackDataDebug.Clear();
-            _LastCallbackDataDebug.Add("Response", LastWebRpcResponse.ToStringFull());
+            _LastCallbackDataDebug.Add("Properties that changed", LastRoomPropertiesThatChanged.ToStringFull());
 
             BroadcastCallback();
         }
