@@ -1,4 +1,6 @@
 // (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
 using UnityEngine;
 using Photon.Pun;
@@ -9,7 +11,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 	[Tooltip("Connect to Photon Network: \n" +
 		"Connect to the configured Photon server: Reads NetworkingPeer.serverSettingsAssetPath and connects to cloud or your own server. \n" +
         "Uses: PhotonNetwork.ConnectToBestCloudServer()")]
-	public class Pun2ConnectToBestCloudServer : FsmStateAction
+	public class PunConnectToBestCloudServer : PunActionBase
 	{
 		
 		[Tooltip("The AppId. Leave to none or empty to use the one from the Server Settings")]
@@ -17,18 +19,34 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
         public FsmBool resetBestRegionInPref;
 
+        [ActionSection("Result")]
+        [UIHint(UIHint.Variable)]
+        [Tooltip("false if the connection will not be attempted. True will attempt connection")]
+        public FsmBool result;
+
+        [Tooltip("Event to send if the connection will be attempted")]
+        public FsmEvent willProceed;
+
+        [Tooltip("Event to send if the connection will not be attempted")]
+        public FsmEvent willNotProceed;
 
         public override void Reset()
         {
             resetBestRegionInPref = false;
             appIdRealtime = new FsmString(){UseVariable=true};
-		}
+
+            result = null;
+            willProceed = null;
+            willNotProceed = null;
+        }
 
 		public override void OnEnter()
 		{
 			// reset authentication failure properties.
 			PlayMakerPhotonProxy.lastAuthenticationDebugMessage = string.Empty;
 			PlayMakerPhotonProxy.lastAuthenticationFailed=false;
+
+            bool _result;
 
             #if !(UNITY_WINRT || UNITY_WP8 || UNITY_PS3 || UNITY_WIIU)
             if (!appIdRealtime.IsNone || string.IsNullOrEmpty(appIdRealtime.Value))
@@ -45,12 +63,20 @@ namespace HutongGames.PlayMaker.Pun2.Actions
                 ServerSettings.ResetBestRegionCodeInPreferences();
             }
 
-            PhotonNetwork.ConnectToBestCloudServer();
+            _result = PhotonNetwork.ConnectToBestCloudServer();
 
             #else
                 Debug.Log("Connect to Best Server is not available on this platform");
             #endif
-            
+
+
+            if (!result.IsNone)
+            {
+                result.Value = _result;
+            }
+
+            Fsm.Event(_result ? willProceed : willNotProceed);
+
             Finish();
 		}
 		

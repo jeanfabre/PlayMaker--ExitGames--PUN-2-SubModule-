@@ -24,10 +24,10 @@ namespace HutongGames.PlayMaker.Pun2
     /// 
     /// This behavior also watch the connection state and broadcast associated global events.
     /// example: PhotonNetwork.connectionState.Connecting is translated as a global event named "PHOTON / STATE : CONNECTING"
-    public class PlayMakerPun2CallbacksProxy : MonoBehaviourPunCallbacks
+    public class PlayMakerPunCallbacksProxy : MonoBehaviourPunCallbacks
     {
 
-        public static PlayMakerPun2CallbacksProxy Instance;
+        public static PlayMakerPunCallbacksProxy Instance;
         /// <summary>
         /// output in the console activities of the various elements.
         /// TODO: should be set to false for release
@@ -49,9 +49,9 @@ namespace HutongGames.PlayMaker.Pun2
         public Player lastMessagePhotonPlayer;
 
         /// <summary>
-        /// The last Pun 2 callback.
+        /// The last Pun callback.
         /// </summary>
-        public Pun2Callbacks LastCallback = Pun2Callbacks.Unknown;
+        public PunCallbacks LastCallback = PunCallbacks.Unknown;
 
         /// <summary>
         /// The last PlayMaker event related to the last Pun2 callback;s
@@ -120,6 +120,24 @@ namespace HutongGames.PlayMaker.Pun2
             Update_connectionStateWatcher();
         }
 
+
+        #region Public Interface
+
+        public int RoomListCount
+        {
+            get
+            {
+                if (LastRoomList!=null)
+                {
+                    return LastRoomList.Count;
+                }
+
+                return -1;
+            }
+        }
+
+        #endregion
+
         #region connection state watcher
 
         /// <summary>
@@ -136,7 +154,7 @@ namespace HutongGames.PlayMaker.Pun2
                 }
 
                 lastConnectionState = PhotonNetwork.NetworkClientState;
-                PlayMakerFSM.BroadcastEvent(PlayMakerPun2LUT.ClientStateEnumEvents[PhotonNetwork.NetworkClientState]);
+                PlayMakerFSM.BroadcastEvent(PlayMakerPunLUT.ClientStateEnumEvents[PhotonNetwork.NetworkClientState]);
             }
 
         }// Update_connectionStateWatcher
@@ -199,24 +217,24 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnConnected()
         {
-            LastCallback = Pun2Callbacks.OnConnected;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnConnected;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             BroadcastCallback();
         }
 
         public override void OnConnectedToMaster()
         {
-            LastCallback = Pun2Callbacks.OnConnectedToMaster;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnConnectedToMaster;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             BroadcastCallback();
         }
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            LastCallback = Pun2Callbacks.OnDisconnected;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnDisconnected;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastDisconnectCause = cause;
 
@@ -228,8 +246,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnCustomAuthenticationResponse(Dictionary<string, object> data)
         {
-            LastCallback = Pun2Callbacks.OnCustomAuthenticationResponse;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnCustomAuthenticationResponse;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastAuthenticationFailed = false;
             lastCustomAuthenticationResponse = data;
@@ -246,8 +264,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnCustomAuthenticationFailed(string debugMessage)
         {
-            LastCallback = Pun2Callbacks.OnCustomAuthenticationFailed;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnCustomAuthenticationFailed;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastAuthenticationDebugMessage = debugMessage;
             lastAuthenticationFailed = true;
@@ -261,16 +279,16 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnJoinedLobby()
         {
-            LastCallback = Pun2Callbacks.OnJoinedLobby;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnJoinedLobby;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             BroadcastCallback();
         }
 
         public override void OnLeftLobby()
         {
-            LastCallback = Pun2Callbacks.OnLeftLobby;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnLeftLobby;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             BroadcastCallback();
         }
@@ -278,8 +296,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnCreatedRoom()
         {
-            LastCallback = Pun2Callbacks.OnCreatedRoom;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnCreatedRoom;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastCreateRoomFailed = false;
             LastCreateRoomFailedMessage = string.Empty;
@@ -290,8 +308,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
-            LastCallback = Pun2Callbacks.OnCreateRoomFailed;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnCreateRoomFailed;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastCreateRoomFailed = true;
             LastCreateRoomFailedReturnCode = returnCode;
@@ -307,8 +325,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnJoinedRoom()
         {
-            LastCallback = Pun2Callbacks.OnJoinedRoom;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnJoinedRoom;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastJoinRoomFailed = false;
             LastJoinRoomFailedReturnCode = 0;
@@ -323,8 +341,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
-            LastCallback = Pun2Callbacks.OnJoinRoomFailed;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnJoinRoomFailed;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastJoinRoomFailed = true;
             LastJoinRoomFailedReturnCode = returnCode;
@@ -339,8 +357,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            LastCallback = Pun2Callbacks.OnJoinRandomFailed;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnJoinRandomFailed;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastJoinRandomRoomFailed = true;
             LastJoinRandomRoomFailedReturnCode = returnCode;
@@ -355,8 +373,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnLeftRoom()
         {
-            LastCallback = Pun2Callbacks.OnLeftRoom;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnLeftRoom;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             BroadcastCallback();
         }
@@ -364,8 +382,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            LastCallback = Pun2Callbacks.OnPlayerEnteredRoom;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnPlayerEnteredRoom;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastMessagePhotonPlayer = newPlayer;
 
@@ -377,8 +395,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            LastCallback = Pun2Callbacks.OnPlayerLeftRoom;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnPlayerLeftRoom;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastMessagePhotonPlayer = otherPlayer;
 
@@ -390,8 +408,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnFriendListUpdate(List<FriendInfo> friendList)
         {
-            LastCallback = Pun2Callbacks.OnFriendListUpdate;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnFriendListUpdate;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             LastFriendList = friendList;
 
@@ -403,8 +421,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
         {
-            LastCallback = Pun2Callbacks.OnLobbyStatisticsUpdate;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnLobbyStatisticsUpdate;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastlobbyStatistics = lobbyStatistics;
 
@@ -416,8 +434,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
-            LastCallback = Pun2Callbacks.OnMasterClientSwitched;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnMasterClientSwitched;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastMessagePhotonPlayer = newMasterClient;
 
@@ -429,8 +447,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
         {
-            LastCallback = Pun2Callbacks.OnRoomListUpdate;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnRoomListUpdate;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             lastMessagePhotonPlayer = target;
             LastPlayerPropertiesUpdate = changedProps;
@@ -444,8 +462,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            LastCallback = Pun2Callbacks.OnRoomListUpdate;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnRoomListUpdate;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             LastRoomList = roomList;
 
@@ -457,8 +475,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
         {
-            LastCallback = Pun2Callbacks.OnRoomPropertiesUpdate;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnRoomPropertiesUpdate;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             LastRoomPropertiesThatChanged = propertiesThatChanged;
 
@@ -470,8 +488,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnRegionListReceived(RegionHandler regionHandler)
         {
-            LastCallback = Pun2Callbacks.OnRegionListReceived;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnRegionListReceived;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             LastRegionHandler = regionHandler;
 
@@ -483,8 +501,8 @@ namespace HutongGames.PlayMaker.Pun2
 
         public override void OnWebRpcResponse(OperationResponse response)
         {
-            LastCallback = Pun2Callbacks.OnWebRpcResponse;
-            LastCallbackEvent = PlayMakerPun2LUT.CallbacksEvents[LastCallback];
+            LastCallback = PunCallbacks.OnWebRpcResponse;
+            LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
             LastWebRpcResponse = response;
 

@@ -4,7 +4,7 @@ using Photon.Realtime;
 namespace HutongGames.PlayMaker.Pun2
 {
 
-    public enum Pun2Callbacks
+    public enum PunCallbacks
     {
         OnConnected                             = 1,
         OnConnectedToMaster                     = 2,
@@ -32,7 +32,7 @@ namespace HutongGames.PlayMaker.Pun2
         Unknown                                 = 0
     }
 
-    public enum Pun2CallbacksWithData
+    public enum PunCallbacksWithData
     {
         OnDisconnected                          = 3,
         OnCustomAuthenticationResponse          = 4,
@@ -45,33 +45,33 @@ namespace HutongGames.PlayMaker.Pun2
 
     }
 
-    public class PlayMakerPun2LUT
+    public class PlayMakerPunLUT
     {
-        public static readonly Dictionary<Pun2Callbacks, string> CallbacksEvents = new Dictionary<Pun2Callbacks, string>()
+        public static readonly Dictionary<PunCallbacks, string> CallbacksEvents = new Dictionary<PunCallbacks, string>()
     {
-        {Pun2Callbacks.OnConnected,                     "PHOTON / ON CONNECTED"},
-        {Pun2Callbacks.OnConnectedToMaster,             "PHOTON / ON CONNECTED TO MASTER"},
-        {Pun2Callbacks.OnDisconnected,                  "PHOTON / ON DISCONNECTED"},
-        {Pun2Callbacks.OnCustomAuthenticationResponse,  "PHOTON / ON CUSTOM AUTHENTICATION RESPONSE"},
-        {Pun2Callbacks.OnCustomAuthenticationFailed,    "PHOTON / ON CUSTOM AUTHENTICATION FAILED"},
-        {Pun2Callbacks.OnJoinedLobby,                   "PHOTON / ON JOINED LOBBY"},
-        {Pun2Callbacks.OnLeftLobby,                     "PHOTON / ON LEFT LOBBY"},
-        {Pun2Callbacks.OnCreatedRoom,                   "PHOTON / ON CREATED ROOM"},
-        {Pun2Callbacks.OnCreateRoomFailed,              "PHOTON / ON CREATE ROOM FAILED "},
-        {Pun2Callbacks.OnJoinedRoom,                    "PHOTON / ON JOINED ROOM"},
-        {Pun2Callbacks.OnJoinRoomFailed,                "PHOTON / ON JOINED ROOM FAILED"},
-        {Pun2Callbacks.OnJoinRandomFailed,              "PHOTON / ON JOIN RANDOM ROOM FAILED"},
-        {Pun2Callbacks.OnLeftRoom,                      "PHOTON / ON LEFT ROOM"},
-        {Pun2Callbacks.OnPlayerEnteredRoom,             "PHOTON / ON PLAYER ENTERED ROOM"},
-        {Pun2Callbacks.OnPlayerLeftRoom,                "PHOTON / ON PLAYER LEFT ROOM"},
-        {Pun2Callbacks.OnFriendListUpdate,              "PHOTON / ON FRIEND LIST UPDATE"},
-        {Pun2Callbacks.OnRoomListUpdate,                "PHOTON / ON ROOM LIST UPDATE"},
-        {Pun2Callbacks.OnRoomPropertiesUpdate,          "PHOTON / ON ROOM PROPERTIES UPDATE"},
-        {Pun2Callbacks.OnPlayerPropertiesUpdate,        "PHOTON / ON PLAYER PROPERTIES UPDATE"},
-        {Pun2Callbacks.OnLobbyStatisticsUpdate,         "PHOTON / ON LOBBY STATISTICS UPDATE"},
-        {Pun2Callbacks.OnMasterClientSwitched,          "PHOTON / ON MASTERCLIENT SWITCHED"},
-        {Pun2Callbacks.OnRegionListReceived,            "PHOTON / ON REGION LIST RECEIVED"},
-        {Pun2Callbacks. OnWebRpcResponse,               "PHOTON / ON WEBRPC RESPONSE"}
+        {PunCallbacks.OnConnected,                     "PHOTON / ON CONNECTED"},
+        {PunCallbacks.OnConnectedToMaster,             "PHOTON / ON CONNECTED TO MASTER"},
+        {PunCallbacks.OnDisconnected,                  "PHOTON / ON DISCONNECTED"},
+        {PunCallbacks.OnCustomAuthenticationResponse,  "PHOTON / ON CUSTOM AUTHENTICATION RESPONSE"},
+        {PunCallbacks.OnCustomAuthenticationFailed,    "PHOTON / ON CUSTOM AUTHENTICATION FAILED"},
+        {PunCallbacks.OnJoinedLobby,                   "PHOTON / ON JOINED LOBBY"},
+        {PunCallbacks.OnLeftLobby,                     "PHOTON / ON LEFT LOBBY"},
+        {PunCallbacks.OnCreatedRoom,                   "PHOTON / ON CREATED ROOM"},
+        {PunCallbacks.OnCreateRoomFailed,              "PHOTON / ON CREATE ROOM FAILED "},
+        {PunCallbacks.OnJoinedRoom,                    "PHOTON / ON JOINED ROOM"},
+        {PunCallbacks.OnJoinRoomFailed,                "PHOTON / ON JOINED ROOM FAILED"},
+        {PunCallbacks.OnJoinRandomFailed,              "PHOTON / ON JOIN RANDOM ROOM FAILED"},
+        {PunCallbacks.OnLeftRoom,                      "PHOTON / ON LEFT ROOM"},
+        {PunCallbacks.OnPlayerEnteredRoom,             "PHOTON / ON PLAYER ENTERED ROOM"},
+        {PunCallbacks.OnPlayerLeftRoom,                "PHOTON / ON PLAYER LEFT ROOM"},
+        {PunCallbacks.OnFriendListUpdate,              "PHOTON / ON FRIEND LIST UPDATE"},
+        {PunCallbacks.OnRoomListUpdate,                "PHOTON / ON ROOM LIST UPDATE"},
+        {PunCallbacks.OnRoomPropertiesUpdate,          "PHOTON / ON ROOM PROPERTIES UPDATE"},
+        {PunCallbacks.OnPlayerPropertiesUpdate,        "PHOTON / ON PLAYER PROPERTIES UPDATE"},
+        {PunCallbacks.OnLobbyStatisticsUpdate,         "PHOTON / ON LOBBY STATISTICS UPDATE"},
+        {PunCallbacks.OnMasterClientSwitched,          "PHOTON / ON MASTERCLIENT SWITCHED"},
+        {PunCallbacks.OnRegionListReceived,            "PHOTON / ON REGION LIST RECEIVED"},
+        {PunCallbacks. OnWebRpcResponse,               "PHOTON / ON WEBRPC RESPONSE"}
     };
 
 

@@ -1,11 +1,10 @@
 // (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
-using System;
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using HutongGames.PlayMaker;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -70,6 +69,8 @@ namespace HutongGames.PlayMaker.Pun2
         /// Is True if the last authentication failed.
         /// </summary>
         public static bool lastAuthenticationFailed = false;
+
+
 
 
         #region Photon network synch
@@ -159,9 +160,9 @@ namespace HutongGames.PlayMaker.Pun2
             foreach (PlayMakerFSM fsm in fsmsToObserve)
             {
                 bool ok = false;
-                foreach (PhotonView photonView in allPhotonViews)
+                foreach (PhotonView _photonView in allPhotonViews)
                 {
-                    foreach (Component _comp in photonView.ObservedComponents)
+                    foreach (Component _comp in _photonView.ObservedComponents)
                     {
                         if (_comp == fsm)
                         {
@@ -186,7 +187,7 @@ namespace HutongGames.PlayMaker.Pun2
             // now inject PlayMakerPhotonView where required.
             foreach (PhotonView _photonView in allPhotonViews)
             {
-                //Debug.Log(" photon view observing : "+photonView.observed+" "+photonView.viewID);
+                Debug.Log(" photon view observing : "+_photonView.ObservedComponents.ToStringFull()+" "+_photonView.ViewID);
 
                 int i = 0;
                 foreach (Component _comp in _photonView.ObservedComponents)
@@ -194,27 +195,19 @@ namespace HutongGames.PlayMaker.Pun2
                     if (_comp is PlayMakerFSM)
                     {
                         PlayMakerFSM fsm = (PlayMakerFSM)_comp;
-                        PlayMakerPhotonView synchProxy = photonView.gameObject.AddComponent<PlayMakerPhotonView>();
-                        Debug.Log("switching observed");
+                        PlayMakerPhotonView synchProxy = _photonView.gameObject.AddComponent<PlayMakerPhotonView>();
+                        Debug.Log("switching observed <"+ i +">");
                         synchProxy.observed = fsm;
 
-                        photonView.ObservedComponents[i] = synchProxy;
-
+                        _photonView.ObservedComponents[i] = synchProxy;
+                        
                     }
 
                     i++;
                 }
-                /* TOFIX: do we need this anymore? .observed doesn't seems to be used
-                if ( photonView.observed is PlayMakerFSM)
-                {
-                    PlayMakerFSM fsm =  (PlayMakerFSM)photonView.observed;
-                    PlayMakerPhotonView synchProxy = photonView.gameObject.AddComponent<PlayMakerPhotonView>();
-                    Debug.Log("switching observed");
-                    synchProxy.observed = fsm;
 
-                    photonView.observed = synchProxy;
-                }
-                */
+                Debug.Log(" photon view observing job done : " + _photonView.ObservedComponents.ToStringFull() + " " + _photonView.ViewID);
+
             }
 
         }// SanitizeGameObject
@@ -461,14 +454,14 @@ namespace HutongGames.PlayMaker.Pun2
         /// <param name='globalEventName'>
         /// Global Fsm event name to broadcast using the photon target rule.
         /// </param>
-        public void PhotonRpcBroacastFsmEvent(RpcTarget target, string globalEventName)
+        public void PhotonRpcBroadcastFsmEvent(RpcTarget target, string globalEventName)
         {
             if (LogMessageInfo)
             {
-                Debug.Log("RPC to send global Fsm Event:" + globalEventName + " to target:" + target);
+                Debug.Log("RPC to send global Fsm Event:" + globalEventName + " to target:" + target,this);
             }
 
-            photonView.RPC("rpc", target, globalEventName);// method name used to be too long : "RPC_PhotonRpcBroadcastFsmEvent"
+            this.photonView.RPC("rpc", target, globalEventName);// method name used to be too long : "RPC_PhotonRpcBroadcastFsmEvent"
         }
 
         /// <summary>
@@ -484,7 +477,7 @@ namespace HutongGames.PlayMaker.Pun2
         /// String data to pass with this event. WARNING: this is not supposed to be (nor efficient) a way to synchronize data. This is simply to comply with
         /// the ability for FsmEvent to include data.
         /// </param>
-        public void PhotonRpcBroacastFsmEventWithString(RpcTarget target, string globalEventName, string stringData)
+        public void PhotonRpcBroadcastFsmEventWithString(RpcTarget target, string globalEventName, string stringData)
         {
             if (LogMessageInfo)
             {
@@ -519,8 +512,9 @@ namespace HutongGames.PlayMaker.Pun2
         {
             if (LogMessageInfo)
             {
-                Debug.Log(info.Sender);
+                Debug.Log("RPC Received for global event '"+ globalEventName+ "' info:"+info,this);
             }
+            
             lastMessagePhotonPlayer = info.Sender;
 
             PlayMakerFSM.BroadcastEvent(globalEventName);
@@ -578,7 +572,7 @@ namespace HutongGames.PlayMaker.Pun2
                 }
 
                 lastConnectionState = PhotonNetwork.NetworkClientState;
-                PlayMakerFSM.BroadcastEvent(PlayMakerPun2LUT.ClientStateEnumEvents[PhotonNetwork.NetworkClientState]);
+                PlayMakerFSM.BroadcastEvent(PlayMakerPunLUT.ClientStateEnumEvents[PhotonNetwork.NetworkClientState]);
             }
 
         }// Update_connectionStateWatcher

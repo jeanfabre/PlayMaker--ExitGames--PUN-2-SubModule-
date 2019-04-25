@@ -1,17 +1,18 @@
 // (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
 using Photon.Realtime;
-using UnityEngine;
 
 namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Retrieve the disconnect cause of the last photon message (OnConnectionFail, OnFailedToConnectToPhoton).")]
 	[HelpUrl("")]
-	public class Pun2GetEventData : FsmStateAction
+	public class PunGetEventData : PunActionBase
 	{
 
-        public Pun2CallbacksWithData pun2Event;
+        public PunCallbacksWithData pun2Event;
 
         [Tooltip("The disconnect cause")]
 		[UIHint(UIHint.Variable)]
@@ -28,7 +29,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
 		public override void Reset()
 		{
-            pun2Event = Pun2CallbacksWithData.OnDisconnected;
+            pun2Event = PunCallbacksWithData.OnDisconnected;
 
             cause = null;
 			
@@ -41,11 +42,11 @@ namespace HutongGames.PlayMaker.Pun2.Actions
             _ok = false;
 
 
-            if (pun2Event == Pun2CallbacksWithData.OnDisconnected)
+            if (pun2Event == PunCallbacksWithData.OnDisconnected)
             {
-                if (PlayMakerPun2CallbacksProxy.Instance.LastCallback == (Pun2Callbacks)pun2Event)
+                if (PlayMakerPunCallbacksProxy.Instance.LastCallback == (PunCallbacks)pun2Event)
                 {
-                    cause.Value = PlayMakerPun2CallbacksProxy.Instance.lastDisconnectCause;
+                    cause.Value = PlayMakerPunCallbacksProxy.Instance.lastDisconnectCause;
                     _ok = true;
                 }
             }

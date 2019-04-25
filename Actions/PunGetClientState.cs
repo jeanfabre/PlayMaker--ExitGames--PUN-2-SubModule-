@@ -1,6 +1,7 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
-using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -8,8 +9,8 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Gets Photon networking client connection state")]
-//[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W904")]
-	public class Pun2GetClientState : FsmStateAction
+    [HelpUrl("")]
+	public class PunGetClientState : PunActionBase
 	{
 
         [Tooltip("The current client state")]

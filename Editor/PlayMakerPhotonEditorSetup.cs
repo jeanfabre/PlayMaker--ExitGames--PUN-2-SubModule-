@@ -26,7 +26,7 @@ namespace HutongGames.PlayMaker.Pun2.Editor
         public static void CreateGlobalEventIfNecessary()
         {
             Debug.Log("CreateGlobalEventIfNecessary");
-            foreach (string _event in PlayMakerPun2LUT.PhotonEvents)
+            foreach (string _event in PlayMakerPunLUT.PhotonEvents)
             {
                 _eventAdded = PlayMakerUtils.CreateIfNeededGlobalEvent(_event);
             }
