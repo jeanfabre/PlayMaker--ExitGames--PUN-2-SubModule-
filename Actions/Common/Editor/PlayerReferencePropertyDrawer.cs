@@ -31,7 +31,12 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
             if (_ref == PlayerReferenceProperty.PlayerReferences.ByUserId)
             {
-                EditField("userid", _class.userId, attributes);
+                EditField("userId", _class.userId, attributes);
+            }
+            
+            if (_ref == PlayerReferenceProperty.PlayerReferences.ByActorNumber)
+            {
+                EditField("actorNumber", _class.actorNumber, attributes);
             }
 
             if (_ref == PlayerReferenceProperty.PlayerReferences.ByNickName)

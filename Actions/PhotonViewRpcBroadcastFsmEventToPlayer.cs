@@ -4,7 +4,6 @@
 
 using UnityEngine;
 using Photon.Realtime;
-using Photon.Pun;
 
 namespace HutongGames.PlayMaker.Pun2.Actions
 {
