@@ -1,4 +1,4 @@
-// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+﻿// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
 // Author jean@hutonggames.com
 // This code is licensed under the MIT Open source License
 
@@ -8,9 +8,8 @@ using Photon.Realtime;
 namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
-	[Tooltip("Destroy all GameObjects/PhotonViews for a given player. Can only be called on the local player. The only exception is the master client which can call this for all players.")]
-	[HelpUrl("")]
-	public class PhotonNetworkDestroyPlayer : PunActionBase
+	[Tooltip("Remove all buffered RPCs from server that were sent by targetPlayer. Can only be called on local player (for 'self') or Master Client (for anyone).")]
+	public class PunRemoveBufferedRpc : FsmStateAction
 	{
 		[Tooltip("The Photon player")]
 		[RequiredField]
@@ -19,7 +18,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[Tooltip("Send this event if the action was executed")]
 		public FsmEvent successEvent;
 		
-		[Tooltip("Send this event if the action was not executed, likely because you are trying to destroy a player different from your localplayer and you are not the masterClient")]
+		[Tooltip("Send this event if the action was not executed, likely because we are not on the master and photonPlayer doesn't point to self or player id is wrong.")]
 		public FsmEvent failureEvent;
 
 		private Player _player;
@@ -30,7 +29,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 			successEvent = null;
 			failureEvent = null;
 		}
-
+		
 		public override void OnEnter()
 		{
 			ExecuteAction();
@@ -38,21 +37,27 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 			Finish();
 		}
 		
-		
 		void ExecuteAction()
 		{
+			if (!PhotonNetwork.InRoom)
+			{
+				LogError("Operation only allowed when inside a room");
+				Fsm.Event(failureEvent);
+				return;
+			}
+			
 			_player = player.GetPlayer(this);
 			
-			if (_player!=null)
+			if (_player != null)
 			{
 				if (!_player.Equals(PhotonNetwork.LocalPlayer) && !PhotonNetwork.IsMasterClient)
 				{
-					LogError("Destroying a player different from your LocalPlayer is not allowed, unless you are the current MasterClient");
+					LogError("Removing a player's Buffered RPC different then your LocalPlayer is not allowed, unless you are the current MasterClient");
 					Fsm.Event(failureEvent);
 				}
 				else
 				{
-					PhotonNetwork.DestroyPlayerObjects(_player);
+					PhotonNetwork.RemoveRPCs(_player);
 					Fsm.Event(successEvent);
 				}
 			}
@@ -61,7 +66,6 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 				LogError("Player reference is null");
 				Fsm.Event(failureEvent);
 			}
-			
 		}
 	}
 }

@@ -1,7 +1,12 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
 using Photon.Pun;
 using UnityEngine;
+
+
+#pragma warning disable 0414
 
 namespace HutongGames.PlayMaker.Pun2
 {

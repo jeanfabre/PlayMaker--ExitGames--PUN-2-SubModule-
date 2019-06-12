@@ -21,14 +21,14 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[Tooltip("The PhotonView ID as int")]
 		public FsmInt viewID;
 
-        [Tooltip("Send this event if there was no PhotonView found on the GamoObject")]
-        public FsmEvent failure;
+        [Tooltip("Send this event if the action was not executed, likely because there was no PhotonView found on the GameObject")]
+        public FsmEvent failureEvent;
 
         public override void Reset()
 		{
 			gameObject = null;
             viewID = null;
-            failure = null;
+			failureEvent = null;
 		}
 
         public override void OnEnter()
@@ -42,14 +42,13 @@ namespace HutongGames.PlayMaker.Pun2.Actions
         {
             if (!UpdateCache(Fsm.GetOwnerDefaultTarget(gameObject)))
             {
-                if (failure != null) Fsm.Event(failure);
+	            LogError("missing PhotonView on target");
+                if (failureEvent != null) Fsm.Event(failureEvent);
                 return;
             }
 
             viewID.Value = this.photonView.ViewID;
-			
-			Finish();
-		}
 
+		}
 	}
 }
