@@ -17,13 +17,17 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[ObjectType(typeof(CustomAuthenticationType))]
 		public FsmEnum authenticationType;
 
-		[Tooltip("Name or other end-user ID used in custom authentication service.")]
+		[Tooltip("the User Id")]
 		[RequiredField]
-		public FsmString authName;
+		public FsmString userId;
 		
-		[Tooltip("Token provided by authentication service to be used on initial 'login' to Photon.")]
-		[RequiredField]
-		public FsmString authToken;
+		[Tooltip("Authentication Parameters")]
+		[CompoundArray("Authentication Parameters", "key", "value")]
+		public FsmString[] authParameterKeys;
+		[UIHint(UIHint.Variable)]
+		public FsmString[] authParameterValues;
+		
+		
 		
 		[Tooltip("Sets the data to be passed-on to the auth service via POST. Empty string will set AuthPostData to null.")]
 		public FsmString authPostData;
@@ -31,9 +35,13 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		public override void Reset()
 		{
 			authenticationType = CustomAuthenticationType.Custom;
-			authName = null;
-			authToken = null;
+			userId = new FsmString(){UseVariable = true};
+			
 			authPostData = new FsmString(){UseVariable=true};
+
+			authParameterKeys = null;
+			authParameterValues = null;
+			
 		}
 
 		public override void OnEnter()
@@ -49,11 +57,23 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 			
 			PhotonNetwork.AuthValues.AuthType = (CustomAuthenticationType)authenticationType.Value;
 
-			PhotonNetwork.AuthValues.AddAuthParameter("username", authName.Value);
-			PhotonNetwork.AuthValues.AddAuthParameter("token", authToken.Value);
+			if (!userId.IsNone)
+			{
+				PhotonNetwork.AuthValues.UserId = userId.Value;
+			}
 
-			PhotonNetwork.AuthValues.SetAuthPostData(authPostData.Value);
+			if (!authPostData.IsNone)
+			{
+				PhotonNetwork.AuthValues.SetAuthPostData(authPostData.Value);
+			}
+
+			// get the paremeters
+			int i = 0;
+			foreach(FsmString key in authParameterKeys)
+			{
+					PhotonNetwork.AuthValues.AddAuthParameter(key.Value, authParameterValues[i].Value);
+				i++;
+			}
 		}
-
 	}
 }

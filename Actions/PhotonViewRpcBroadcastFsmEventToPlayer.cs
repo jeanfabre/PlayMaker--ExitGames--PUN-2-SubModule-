@@ -17,7 +17,6 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[Tooltip("The targeted player")]
 		public PlayerReferenceProperty player;
 		
-		//JFF: TOFIX: SHOULD NOT BE PUBLIC, BUT I NEED THIS TO DISPLAY GLOBAL EVENTS 
 		[Tooltip("Leave to BroadCastAll.")]
 		public FsmEventTarget eventTarget;
 		
@@ -35,7 +34,6 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		{
 			player = null;
 	
-			// JFF: how can I set this silently without a public variable? if I set it to private, it doesn't work anymore. maybe I forgot a setting?
 			eventTarget = new FsmEventTarget();
 			eventTarget.target = FsmEventTarget.EventTarget.BroadcastAll;
 			remoteEvent = null;
@@ -51,25 +49,17 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
 		void ExecuteAction()
 		{
-			
-			// get the photon proxy for Photon RPC access
-			GameObject go = GameObject.Find("PlayMaker Photon Proxy");
-			
-			if (go == null )
-			{
-				return;
-			}
-			
+
 			if (remoteEvent.Name ==""){
 				return;
 			}
-			
-			// get the proxy component
-			PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
-			if (_proxy==null)
+
+			if (PlayMakerPhotonProxy.Instance==null)
 			{
+				Debug.LogError("PlayMakerPhotonProxy is missing in the scene");
 				return;
 			}
+			
 
 			_player = player.GetPlayer(this);
 
@@ -79,10 +69,25 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 			}
 			
 			if (! stringData.IsNone && stringData.Value != ""){
-				_proxy.PhotonRpcFsmBroadcastEventWithString(_player,remoteEvent.Name,stringData.Value);
+				PlayMakerPhotonProxy.Instance.PhotonRpcFsmBroadcastEventWithString(_player,remoteEvent.Name,stringData.Value);
 			}else{
-				_proxy.PhotonRpcBroadcastFsmEvent(_player,remoteEvent.Name);
+				PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEvent(_player,remoteEvent.Name);
 			}	
+		}
+
+		public override string ErrorCheck()
+		{
+			if (eventTarget.target != FsmEventTarget.EventTarget.BroadcastAll)
+			{
+				return "eventTarget must be set to broadcast";	
+			}
+			
+			if (remoteEvent == null)
+			{
+				return "Remote Event not set";
+			}
+	
+			return string.Empty;
 		}
 	}
 }

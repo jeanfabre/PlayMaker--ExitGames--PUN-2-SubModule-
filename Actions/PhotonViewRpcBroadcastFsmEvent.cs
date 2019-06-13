@@ -16,7 +16,8 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[ObjectType(typeof(RpcTarget))]
         public FsmEnum  rpcTargets;
 		
-		
+		//JFF: TOFIX: SHOULD NOT BE PUBLIC, BUT I NEED THIS TO DISPLAY GLOBAL EVENTS 
+		[Tooltip("Leave to BroadCastAll.")]
 		public FsmEventTarget eventTarget;
 		
 		[RequiredField]
@@ -50,47 +51,29 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
 		void ExecuteAction()
 		{
-			
-			// get the photon proxy for Photon RPC access
-			GameObject go = GameObject.Find("PlayMaker Photon Proxy");
-			
-			if (go == null )
-			{
-				return;
-			}
-			
-			
+
 			if (remoteEvent != null && remoteEvent.IsGlobal == false)
 			{ 
 				return;
 			}
 			
-		
-			// get the proxy component
-			PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
-			if (_proxy==null)
+			if (PlayMakerPhotonProxy.Instance==null)
 			{
-				Debug.LogWarning("PlayMakerPhotonProxy is missing");
+				Debug.LogError("PlayMakerPhotonProxy is missing in the scene");
 				return;
 			}
-
+			
 			_rpcTargets = (RpcTarget)rpcTargets.Value;
 			
 			if (eventTarget.target == FsmEventTarget.EventTarget.BroadcastAll)
 			{
 				
 				if (! stringData.IsNone && stringData.Value != ""){
-					_proxy.PhotonRpcBroadcastFsmEventWithString(_rpcTargets, remoteEvent.Name,stringData.Value);
+					PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEventWithString(_rpcTargets, remoteEvent.Name,stringData.Value);
 				}else{
-					_proxy.PhotonRpcBroadcastFsmEvent(_rpcTargets, remoteEvent.Name);
+					PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEvent(_rpcTargets, remoteEvent.Name);
 				}
 			}else{
-				
-				if (PlayMakerPhotonProxy.Instance==null)
-				{
-						Debug.LogWarning("PlayMakerPhotonProxy is missing");
-					return;
-				}
 				
 				if (! stringData.IsNone && stringData.Value != ""){
 			//		PlayMakerPhotonProxy.Instance.PhotonRpcSendFsmEventWithString(_rpcTargets, remoteEvent.Name,stringData.Value);
