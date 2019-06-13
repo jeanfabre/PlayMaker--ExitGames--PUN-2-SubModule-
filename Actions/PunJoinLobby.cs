@@ -18,6 +18,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 	public class PunJoinLobby : PunActionBase
 	{
 
+		[Tooltip("The Lobby of the room to join")]
         public TypedLobbyProperty lobby;
 
         [ActionSection("Result")]

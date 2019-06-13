@@ -34,14 +34,14 @@ namespace HutongGames.PlayMaker.Pun2.Actions
             return PunActionHeader.HideActionHeader;
         }
 
-        [SettingsMenuItem("Hide Header")]
+        [SettingsMenuItem("Hide Pun Header")]
         public static void ToggleActionHeader()
         {
             PunActionHeader.HideActionHeader = !PunActionHeader.HideActionHeader;
             EditorPrefs.SetBool(HideActionHeaderPrefsKey, PunActionHeader.HideActionHeader);
         }
 
-        [SettingsMenuItemState("Hide Header")]
+        [SettingsMenuItemState("Hide Pun Header")]
         public static bool ToggleActionHeaderState()
         {
             return PunActionHeader.HideActionHeader;
