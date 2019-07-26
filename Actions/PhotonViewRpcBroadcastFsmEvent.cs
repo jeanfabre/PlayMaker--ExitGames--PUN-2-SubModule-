@@ -16,7 +16,6 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		[ObjectType(typeof(RpcTarget))]
         public FsmEnum  rpcTargets;
 		
-		//JFF: TOFIX: SHOULD NOT BE PUBLIC, BUT I NEED THIS TO DISPLAY GLOBAL EVENTS 
 		[Tooltip("Leave to BroadCastAll.")]
 		public FsmEventTarget eventTarget;
 		
@@ -33,7 +32,6 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 	
 		public override void Reset()
 		{
-			// JFF: how can I set this silently without a public variable? if I set it to private, it doesn't work anymore. maybe I forgot a setting?
 			eventTarget = new FsmEventTarget();
 			eventTarget.target = FsmEventTarget.EventTarget.BroadcastAll;
 			
