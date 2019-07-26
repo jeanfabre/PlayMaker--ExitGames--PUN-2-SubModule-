@@ -54,10 +54,6 @@ namespace HutongGames.PlayMaker.Pun2
         /// </summary>
         public Player lastMessagePhotonPlayer;
 
-        /// <summary>
-        /// The last disconnection or connection failure cause
-        /// </summary>
-        public DisconnectCause lastDisconnectCause;
 
 
         /// <summary>

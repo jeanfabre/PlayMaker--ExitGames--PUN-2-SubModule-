@@ -68,15 +68,10 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
 		public override void OnEnter()
 		{
-			bool ok;
-			ok =getLastMessagePlayerProperties();
+			bool ok = getLastMessagePlayerProperties();
+
+			Fsm.Event(ok ? successEvent : failureEvent);
 			
-			if (ok)
-			{
-				Fsm.Event(successEvent);
-			}else{
-				Fsm.Event(failureEvent);
-			}
 			Finish();
 		}
 
