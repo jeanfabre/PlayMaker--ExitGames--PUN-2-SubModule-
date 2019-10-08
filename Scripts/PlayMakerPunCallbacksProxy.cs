@@ -176,41 +176,11 @@ namespace HutongGames.PlayMaker.Pun2
         /// </summary>
         void BroadcastCallback()
         {
-            LogEventBroadcasting(LastCallback.ToString(), LastCallbackEvent);
+            PlayMakerPhotonProxy.LogEventBroadcasting(DebugLabelPrefix,LastCallback.ToString(), LastCallbackEvent);
 
             PlayMakerFSM.BroadcastEvent(LastCallbackEvent);
         }
-
-        /// <summary>
-        /// Logs the event broadcasting. Only if Debug is on
-        /// </summary>
-        /// <param name="punCallback">Pun callback.</param>
-        /// <param name="fsmEvent">Fsm event.</param>
-        /// <param name="eventData">Event data.</param>
-        void LogEventBroadcasting(string punCallback, string fsmEvent, Dictionary<string, string> eventData = null)
-        {
-            if (debug)
-            {
-                string _data = string.Empty;
-                if (eventData != null)
-                {
-                    foreach (KeyValuePair<string, string> data in eventData)
-                    {
-                        _data += "<color=darkblue>" + data.Key + "</color>=<color=<darkblue>" + data.Value + "</color> ";
-                    }
-                }
-                else
-                {
-                    _data = "No Data associated with this event";
-                }
-
-                Debug.Log(DebugLabelPrefix + " Received Callback <color=fuchsia>" + punCallback + "</color> " +
-                    "Broadcasting global Event <color=fuchsia>" + fsmEvent + "</color>\n" +
-                    _data
-                    , this);
-            }
-        }
-
+        
         #endregion
 
         #region Photon Messages

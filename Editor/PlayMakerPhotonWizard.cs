@@ -36,7 +36,6 @@ namespace HutongGames.PlayMaker.Pun2.Editor
         static PlayMakerPhotonWizard()
         {
             WindowType = typeof(PlayMakerPhotonWizard);
-            RegisterOrigin = AccountService.Origin.Playmaker;
 
 #if UNITY_2018_1_OR_NEWER
             EditorApplication.hierarchyChanged += EditorRefresh;
@@ -81,16 +80,12 @@ namespace HutongGames.PlayMaker.Pun2.Editor
         [MenuItem(PlayMakerPhotonMenuRoot + "Set up Photon Networking")]
         public static void Init()
         {
-            RegisterOrigin = AccountService.Origin.Playmaker;
-
             // custom title in custom, additinal menu entry
             PhotonEditor.CurrentLang.WindowTitle = "Photon Wizard";
 
             EditorWindow.GetWindow(WindowType, false, PhotonEditor.CurrentLang.WindowTitle);
             //ShowRegistrationWizard();
-
             userHasSeenWizardIntro = false;
-
         }
 
 
@@ -166,8 +161,6 @@ namespace HutongGames.PlayMaker.Pun2.Editor
 
         void BuildSceneWizard()
         {
-
-
             // JFF : Adds the playmaker proxy, and only display that button if the scene doesn't have it already.
             // mabe make it in red or a lot clearer
             GUILayout.BeginHorizontal();
@@ -185,9 +178,6 @@ namespace HutongGames.PlayMaker.Pun2.Editor
                 {
                     EditorUtility.OpenWithDefaultApp(PhotonGOPhotonProxyHelpUrl);
                 }
-
-
-
             }
             else
             {
@@ -275,7 +265,6 @@ namespace HutongGames.PlayMaker.Pun2.Editor
 
         }
 
-
         void BuildDocSection()
         {
 
@@ -352,10 +341,8 @@ namespace HutongGames.PlayMaker.Pun2.Editor
 
         protected void OnBuildPlayMakerMainWizard()
         {
-
             //	GUILayout.Space(_topSpace);
-
-
+            
             // JFF : modified the look, but need more checks then just "notSet", not sure if we need to go that far tho.
             // settings
             GUILayout.BeginHorizontal();
@@ -431,14 +418,11 @@ namespace HutongGames.PlayMaker.Pun2.Editor
             }
             GUILayout.FlexibleSpace();
             BuildDocSection();
-
-
         }
 
 
         protected override void UiSetupApp() // OnGuiRegisterCloudApp()
         {
-
             if (EditorApplication.isPlaying)
             {
                 OnBuildPlayMakerMainWizard();
@@ -446,7 +430,6 @@ namespace HutongGames.PlayMaker.Pun2.Editor
             }
             else
             {
-
                 bool isNotSet = false; //TODO: PhotonNetwork.PhotonServerSettings.HostType == ServerSettings.HostingOption.NotSet;
 
                 if (isNotSet)

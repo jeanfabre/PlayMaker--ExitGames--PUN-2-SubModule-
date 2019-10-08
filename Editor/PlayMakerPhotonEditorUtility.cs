@@ -19,14 +19,12 @@ namespace HutongGames.PlayMaker.Pun2
     {
         const string PlayMakerPhotonMenuRoot = "PlayMaker/Addons/Photon Networking/";
 
-        public const float supportedPunVersion = 2.6f;
+        public const float supportedPunVersion = 2.15f;
 
         static readonly string PlayMakerPhotonProxyName = "PlayMaker Photon Proxy";
 
         public static Color lightBlue = new Color(0.3f, 0.7f, 1f);
         public static Color lightOrange = new Color(1f, 0.7f, 0f);
-
-
 
         /*
         // simply test to launch the wizard remotly.

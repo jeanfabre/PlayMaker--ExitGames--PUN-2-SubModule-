@@ -29,6 +29,7 @@ namespace HutongGames.PlayMaker.Pun2
         OnMasterClientSwitched                  = 21,
         OnRegionListReceived                    = 22,
         OnWebRpcResponse                        = 23,
+        OnPhotonInstantiate                     = 24,
         Unknown                                 = 0
     }
 
@@ -71,7 +72,8 @@ namespace HutongGames.PlayMaker.Pun2
         {PunCallbacks.OnLobbyStatisticsUpdate,         "PHOTON / ON LOBBY STATISTICS UPDATE"},
         {PunCallbacks.OnMasterClientSwitched,          "PHOTON / ON MASTERCLIENT SWITCHED"},
         {PunCallbacks.OnRegionListReceived,            "PHOTON / ON REGION LIST RECEIVED"},
-        {PunCallbacks. OnWebRpcResponse,               "PHOTON / ON WEBRPC RESPONSE"}
+        {PunCallbacks.OnWebRpcResponse,                "PHOTON / ON WEBRPC RESPONSE"},
+        {PunCallbacks.OnPhotonInstantiate,             "PHOTON / ON PHOTON INSTANTIATE"}
     };
 
 

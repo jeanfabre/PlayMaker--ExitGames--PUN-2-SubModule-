@@ -108,6 +108,36 @@ namespace HutongGames.PlayMaker.Pun2
 
         }// start
 
+        /// <summary>
+        /// Logs the event broadcasting. Only if Debug is on
+        /// </summary>
+        /// <param name="punCallback">Pun callback.</param>
+        /// <param name="fsmEvent">Fsm event.</param>
+        /// <param name="eventData">Event data.</param>
+       public static void LogEventBroadcasting(string source, string punCallback, string fsmEvent, Dictionary<string, string> eventData = null)
+        {
+            if (Instance.debug)
+            {
+                string _data = string.Empty;
+                if (eventData != null)
+                {
+                    foreach (KeyValuePair<string, string> data in eventData)
+                    {
+                        _data += "<color=darkblue>" + data.Key + "</color>=<color=<darkblue>" + data.Value + "</color> ";
+                    }
+                }
+                else
+                {
+                    _data = "No Data associated with this event";
+                }
+
+                Debug.Log(source+" Received Callback <color=fuchsia>" + punCallback + "</color> " +
+                          "Broadcasting global Event <color=fuchsia>" + fsmEvent + "</color>\n" +
+                          _data
+                    , Instance);
+            }
+        }
+
 
         /// <summary>
         /// pre flight check on game object. Making sure it's set up properly to connect playmaker and PUN together.

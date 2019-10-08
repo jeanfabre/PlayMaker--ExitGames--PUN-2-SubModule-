@@ -22,9 +22,11 @@ namespace HutongGames.PlayMaker.Pun2
     /// It can be set up manually of course, else Iwill do it for the user at runtime when the gameObject is instanciated. 
     /// Note: for gameObject sitting in the hierarchy when starting, the check is also happening but it's directly call within the "PlayMaker photon proxy" mandatory prefab
     /// </summary>
-    public class PlayMakerPhotonGameObjectProxy : MonoBehaviourPunCallbacks
+    public class PlayMakerPhotonGameObjectProxy : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
     {
 
+        const string DebugLabelPrefix = "<color=navy>PlayMaker Photon GameObject proxy: </color>";
+        
         /// <summary>
         /// output in the console activities of the various elements.
         /// Is taken form the debug value of the "PlayMaker Photon Proxy"
@@ -32,6 +34,8 @@ namespace HutongGames.PlayMaker.Pun2
         bool debug = true;
         bool LogMessageInfo = true;
 
+        private PhotonMessageInfo _lastCallbackInfo;
+        
         [ContextMenu("Help")]
         public void help()
         {
@@ -74,24 +78,26 @@ namespace HutongGames.PlayMaker.Pun2
         /// compose this message to dispatch the associated global Fsm Event. 
         /// TOFIX: The problem is, It's called before Fsm are instanciated, so I had to implement a slight delay...
         /// </summary>
-        void OnPhotonInstantiate(PhotonMessageInfo info)
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
+            _lastCallbackInfo = info;
+            
             if (debug)
             {
                 if (!info.Equals(new PhotonMessageInfo()))
                 {
                     if (info.Sender != null)
                     {
-                        Debug.Log("PLayMaker Photon proxy:OnPhotonInstantiate " + info.Sender.NickName);
+                        Debug.Log("PlayMaker Photon proxy:OnPhotonInstantiate " + info.Sender.NickName);
                     }
                     else
                     {
-                        Debug.Log("PLayMaker Photon proxy:OnPhotonInstantiate with no sender info");
+                        Debug.Log("PlayMaker Photon proxy:OnPhotonInstantiate with no sender info");
                     }
                 }
                 else
                 {
-                    Debug.Log("PLayMaker Photon proxy:OnPhotonInstantiate with no PhotonMessageInfo");
+                    Debug.Log("PlayMaker Photon proxy:OnPhotonInstantiate with no PhotonMessageInfo");
                 }
             }
 
@@ -107,10 +113,13 @@ namespace HutongGames.PlayMaker.Pun2
         /// </summary>
         void sendPhotonInstantiationFsmEvent()
         {
+            string _fsmEvent = PlayMakerPunLUT.CallbacksEvents[PunCallbacks.OnPhotonInstantiate];
+
             if (debug)
             {
-                Debug.Log("sending PHOTON INSTANTIATE event to " + this.gameObject.name);
+                Debug.Log("sending "+_fsmEvent+" event to " + this.gameObject.name);
             }
+            
             // set the target to be this gameObject.
             FsmOwnerDefault goTarget = new FsmOwnerDefault();
             goTarget.GameObject = new FsmGameObject();
@@ -124,10 +133,24 @@ namespace HutongGames.PlayMaker.Pun2
             eventTarget.gameObject = goTarget;
             eventTarget.sendToChildren = true;
 
+            
             // create the event.
-            FsmEvent fsmEvent = new FsmEvent("PHOTON / PHOTON INSTANTIATE");
+            FsmEvent fsmEvent = new FsmEvent(_fsmEvent);
 
-            PlayMakerUtils.SendEventToTarget(null,eventTarget, fsmEvent.Name,null); 
+            string _data = "<color=darkblue>" + "ActorNumber" + "</color>=<color=<darkblue>" + _lastCallbackInfo.Sender.ActorNumber + "</color> ";
+            
+            _data += "<color=darkblue>" + "NickName" + "</color>=<color=<darkblue>" + _lastCallbackInfo.Sender.NickName + "</color> ";
+         
+            
+            Debug.Log( "PlayMakerPhotonGameObjectProxy Received Callback <color=fuchsia>" + PunCallbacks.OnPhotonInstantiate + "</color> " +
+                      "Broadcasting global Event <color=fuchsia>" + fsmEvent.Name  + "</color>\n"+
+                      _data
+                , this);
+            
+            FsmEventData _d = new FsmEventData();
+            _d.StringData = _lastCallbackInfo.Sender.NickName;
+            _d.IntData = _lastCallbackInfo.Sender.ActorNumber;
+            PlayMakerUtils.SendEventToTarget(null,eventTarget, fsmEvent.Name,_d); 
 
         }// sendPhotonInstantiationFsmEvent
 
