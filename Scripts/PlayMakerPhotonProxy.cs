@@ -215,12 +215,14 @@ namespace HutongGames.PlayMaker.Pun2
             {
                 Debug.Log(" photon view observing : "+_photonView.ObservedComponents.ToStringFull()+" "+_photonView.ViewID);
 
-                int i = 0;
-                foreach (Component _comp in _photonView.ObservedComponents)
+                Component _comp_i;
+                for (int i = 0; i < _photonView.ObservedComponents.Count; i++)
                 {
-                    if (_comp is PlayMakerFSM)
+                    _comp_i = _photonView.ObservedComponents[i];
+                    
+                    if (_comp_i is PlayMakerFSM)
                     {
-                        PlayMakerFSM fsm = (PlayMakerFSM)_comp;
+                        PlayMakerFSM fsm = (PlayMakerFSM)_comp_i;
                         PlayMakerPhotonView synchProxy = _photonView.gameObject.AddComponent<PlayMakerPhotonView>();
                         Debug.Log("switching observed <"+ i +">");
                         synchProxy.observed = fsm;
