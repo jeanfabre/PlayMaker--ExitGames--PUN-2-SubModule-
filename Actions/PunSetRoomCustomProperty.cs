@@ -9,7 +9,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 	[ActionCategory("Photon")]
 	[Tooltip("Updates and synchronizes the named custom property of this Room. New properties are added, existing values are updated.")]
 	[HelpUrl("")]
-	public class PhotonNetworkSetRoomCustomProperty : FsmStateAction
+	public class PhotonNetworkSetRoomCustomProperty : PunActionBase
 	{
 		[Tooltip("The Custom Property to set or update")]
 		public FsmString customPropertyKey;

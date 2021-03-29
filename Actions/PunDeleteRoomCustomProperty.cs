@@ -10,7 +10,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 	[ActionCategory("Photon")]
 	[Tooltip("Delete the named custom property of this Room.")]
 	[HelpUrl("")]
-	public class PunDeleteRoomCustomProperty : FsmStateAction
+	public class PunDeleteRoomCustomProperty : PunActionBase
 	{
 		
 		[Tooltip("The custom property key to delete")]

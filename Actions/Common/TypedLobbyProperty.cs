@@ -27,12 +27,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 
         public TypedLobby GetTypedLobby()
         {
-            if (name.IsNone && type.IsNone)
-            {
-                return TypedLobby.Default;
-            }
-
-            TypedLobby _t = new TypedLobby();
+            TypedLobby _t = TypedLobby.Default;
 
             if (!name.IsNone)
             {

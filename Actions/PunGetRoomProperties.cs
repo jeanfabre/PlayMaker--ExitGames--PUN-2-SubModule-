@@ -1,17 +1,17 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
-using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-namespace HutongGames.PlayMaker.Actions
+namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Get the room we are currently in. If null, we aren't in any room.")]
-	[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W910")]
-	public class PhotonNetworkGetRoomProperties : FsmStateAction
+	[HelpUrl("")]
+	public class PunGetRoomProperties : PunActionBase
 	{
-
 		[UIHint(UIHint.Variable)]
 		[Tooltip("True if we are in a room.")]
 		public FsmBool isInRoom;

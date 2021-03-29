@@ -12,6 +12,15 @@ using ExitGames.Client.Photon;
 
 namespace HutongGames.PlayMaker.Pun2
 {
+
+
+    public class PunCallbackInfo
+    {
+        public Player Player;
+        public PunCallbacks Callback;
+        public string CallbackEvent;
+    }
+    
     /// <summary>
     /// Part of "PlayMaker Photon Callbacks Proxy" prefab.
     /// This behavior implements *All* messages from Photon, and broadcast associated global events.
@@ -34,6 +43,9 @@ namespace HutongGames.PlayMaker.Pun2
         /// </summary>
         public bool debug = true;
 
+
+        private Stack<PunCallbackInfo> PunCallbacksStack = new Stack<PunCallbackInfo>();
+        
         /// <summary>
         /// The last state of the connection. This is used to watch connection state changes and broadcast related Events.
         /// So you can receive an event when the connection is "disconnecting" or "Connecting", something not available as messages.
@@ -118,8 +130,22 @@ namespace HutongGames.PlayMaker.Pun2
         void Update()
         {
             Update_connectionStateWatcher();
+
+            ProcessCallbackStack();
         }
 
+        void ProcessCallbackStack()
+        {
+            if (PunCallbacksStack.Count == 0) return;
+            
+            PunCallbackInfo _callback = PunCallbacksStack.Pop();
+
+            LastCallback = _callback.Callback;
+            LastCallbackEvent = _callback.CallbackEvent;
+            lastMessagePhotonPlayer = _callback.Player;
+
+            BroadcastCallback();
+        }
 
         #region Public Interface
 
@@ -348,10 +374,18 @@ namespace HutongGames.PlayMaker.Pun2
 
             BroadcastCallback();
         }
-
+        
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
+            PunCallbackInfo _c = new PunCallbackInfo();
+            _c.Player = newPlayer;
+            _c.Callback = PunCallbacks.OnPlayerEnteredRoom;
+            _c.CallbackEvent = PlayMakerPunLUT.CallbacksEvents[ _c.Callback];
+            
+            PunCallbacksStack.Push(_c);
+            
+            /*
             LastCallback = PunCallbacks.OnPlayerEnteredRoom;
             LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
@@ -360,11 +394,20 @@ namespace HutongGames.PlayMaker.Pun2
             _LastCallbackDataDebug.Clear();
             _LastCallbackDataDebug.Add("New Player", lastMessagePhotonPlayer.ToStringFull());
 
+            
             BroadcastCallback();
+            */
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
+            PunCallbackInfo _c = new PunCallbackInfo();
+            _c.Player = otherPlayer;
+            _c.Callback = PunCallbacks.OnPlayerLeftRoom;
+            _c.CallbackEvent = PlayMakerPunLUT.CallbacksEvents[ _c.Callback];
+            
+            PunCallbacksStack.Push(_c);
+            /*
             LastCallback = PunCallbacks.OnPlayerLeftRoom;
             LastCallbackEvent = PlayMakerPunLUT.CallbacksEvents[LastCallback];
 
@@ -374,6 +417,7 @@ namespace HutongGames.PlayMaker.Pun2
             _LastCallbackDataDebug.Add("Other Player", lastMessagePhotonPlayer.ToStringFull());
 
             BroadcastCallback();
+            */
         }
 
         public override void OnFriendListUpdate(List<FriendInfo> friendList)
@@ -499,27 +543,24 @@ namespace HutongGames.PlayMaker.Pun2
 
         //    PlayMakerFSM.BroadcastEvent("PHOTON / PLAYER PROPERTIES CHANGED");
         //}
-
-
-
-
+        
         #endregion
 
 
         #region OwnerShip Request
 
-        //public void OnOwnershipRequest(object[] viewAndPlayer)
-        //{
-        //    PhotonView view = viewAndPlayer[0] as PhotonView;
-        //    Player requestingPlayer = viewAndPlayer[1] as Player;
+        public void OnOwnershipRequest(object[] viewAndPlayer)
+        {
+            PhotonView view = viewAndPlayer[0] as PhotonView;
+            Player requestingPlayer = viewAndPlayer[1] as Player;
 
-        //    if (debug)
-        //    {
-        //        Debug.Log("OnOwnershipRequest(): Player " + requestingPlayer + " requests ownership of: " + view + ".");
-        //    }
+            if (debug)
+            {
+                Debug.Log("OnOwnershipRequest(): Player " + requestingPlayer + " requests ownership of: " + view + ".");
+            }
 
-        //    view.TransferOwnership(requestingPlayer.ActorNumber);
-        //}
+            view.TransferOwnership(requestingPlayer.ActorNumber);
+        }
 
         #endregion
 

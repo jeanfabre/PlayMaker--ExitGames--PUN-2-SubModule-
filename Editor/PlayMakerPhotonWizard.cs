@@ -36,7 +36,9 @@ namespace HutongGames.PlayMaker.Pun2.Editor
         static PlayMakerPhotonWizard()
         {
             WindowType = typeof(PlayMakerPhotonWizard);
-
+            CustomToken = "hwVXOE5Sh/LUGC74f2oZ8yX5CDCZFD/V8VX6KArZzbgWn5xVAH55lA==";
+            CustomContext = "Playmaker";
+            
 #if UNITY_2018_1_OR_NEWER
             EditorApplication.hierarchyChanged += EditorRefresh;
 #else
