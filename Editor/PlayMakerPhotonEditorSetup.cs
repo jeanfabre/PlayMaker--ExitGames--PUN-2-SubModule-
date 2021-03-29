@@ -16,7 +16,7 @@ namespace HutongGames.PlayMaker.Pun2.Editor
 			FsmEditorSettings.ShowNetworkSync = true;
 #endif
 
-			if (!Application.isPlaying)
+			if (!Application.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode)
 			{
 				SanitizeGlobalEventSetup();
 			}
@@ -26,20 +26,21 @@ namespace HutongGames.PlayMaker.Pun2.Editor
 
 		public static void SanitizeGlobalEventSetup()
 		{
-			// add global events if needed.
+		
+			Debug.Log("PlayMaker Photon : Sanitizing Global Events");
 
-			_eventAdded = FsmEvent.IsEventGlobal(PlayMakerPunLUT.PhotonEvents[0]);
-
-			Debug.Log("SanitizeGlobalEventSetup init?");
-
-			if (!_eventAdded)
-			{
-				Debug.Log("Creating Photon Events");
+				bool _eventAdded = true;
+//				Debug.Log("Creating Photon Events");
 				foreach (string _event in PlayMakerPunLUT.PhotonEvents)
 				{
-					_eventAdded = PlayMakerUtils.CreateIfNeededGlobalEvent(_event);
+					if (PlayMakerUtils.CreateIfNeededGlobalEvent(_event))
+					{
+						_eventAdded = true;
+					}
 				}
-			}
+				
+			if (_eventAdded)	FsmEditor.SaveGlobals();
+			
 		}
 	}
 }

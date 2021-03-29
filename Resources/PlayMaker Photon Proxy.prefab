@@ -47,9 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fsm:
-    EditorData: '{"Desc":"DO NOT MODIFY: This is part of the photon integration in
-      playmaker.\n\nImplement global events for each photon messages.\nIt also implements
-      a watcher for the photon state, so when the ","Watermark":"","flags":1}'
     dataVersion: 2
     usedInTemplate: {fileID: 0}
     name: Photon messages interface
@@ -141,14 +138,13 @@ MonoBehaviour:
     password: 
     locked: 0
     manualUpdate: 0
-    outVariableIndices: 
     keepDelayedEventsOnStateExit: 0
-    preprocessed: 0
+    preprocessed: 1
     ExposedEvents: []
     RestartOnEnable: 1
-    ResetVariablesOnEnable: 0
     EnableDebugFlow: 1
     EnableBreakpoints: 1
+    editorFlags: 1
     activeStateName: 
     mouseEvents: 0
     handleLevelLoaded: 0
@@ -191,7 +187,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 1
+  LastCallback: 0
+  LastCallbackEvent: 
   lastDisconnectCause: 0
+  LastCreateRoomFailedReturnCode: 0
+  LastCreateRoomFailedMessage: 
+  LastJoinRoomFailedReturnCode: 0
+  LastJoinRoomFailedMessage: 
+  LastJoinRandomRoomFailedReturnCode: 0
+  LastJoinRandomRoomFailedMessage: 
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +209,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 1
-  lastDisconnectCause: 0
   LogMessageInfo: 1
 --- !u!114 &11400004
 MonoBehaviour:
@@ -224,8 +227,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
+  observableSearch: 0
   ObservedComponents:
   - {fileID: 11400002}
-  viewIdField: 0
+  sceneViewId: 0
   InstantiationId: -1
   isRuntimeInstantiated: 0
