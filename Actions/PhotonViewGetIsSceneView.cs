@@ -1,18 +1,19 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
-using UnityEngine;
 using Photon.Pun;
 
-namespace HutongGames.PlayMaker.Actions
+namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("True if the PhotonView was loaded with the scene (game object) or instantiated with InstantiateSceneObject." +
 		"\n Scene objects are not owned by a particular player but belong to the scene. " +
 		"Thus they don't get destroyed when their creator leaves the game and the current Master Client can control them (whoever that is)." +
 		" The ownerIs is 0 (player IDs are 1 and up). \n A PhotonView component is required on the gameObject")]
-	//[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W918")]
-	public class PhotonViewGetIsSceneView : FsmStateAction
-	{
+	[HelpUrl("")]
+	public class PhotonViewGetIsSceneView : PunComponentActionBase<PhotonView>
+    {
 		[RequiredField]
 		[CheckForComponent(typeof(PhotonView))]
 		[Tooltip("The Game Object with the PhotonView attached.")]
@@ -27,44 +28,36 @@ namespace HutongGames.PlayMaker.Actions
 		
 		[Tooltip("Send this event if the Photon network view is NOT a scene view")]
 		public FsmEvent isNotSceneViewEvent;
-		
-		private PhotonView _networkView;
-		
-		private void _getNetworkView()
-		{
-			GameObject go = Fsm.GetOwnerDefaultTarget(gameObject);
-			if (go == null) 
-			{
-				return;
-			}
-			
-			_networkView =  go.GetComponent<PhotonView>();
-		}
-		
-		public override void Reset()
+
+        [Tooltip("Send this event if there was no PhotonView found on the GamoObject")]
+        public FsmEvent failure;
+
+        public override void Reset()
 		{
 			gameObject = null;
 			isSceneView = null;
 			isSceneViewEvent = null;
 			isNotSceneViewEvent = null;
+            failure = null;
 		}
 
 		public override void OnEnter()
 		{
-			_getNetworkView();
 			
-			checkIsSceneView();
+			ExecuteAction();
 			
 			Finish();
 		}
 		
-		void checkIsSceneView()
+		void ExecuteAction()
 		{
-			if (_networkView ==null)
-			{
-				return;	
-			}
-			bool _isSceneView = _networkView.IsSceneView;
+            if (!UpdateCache(Fsm.GetOwnerDefaultTarget(gameObject)))
+            {
+                if (failure != null) Fsm.Event(failure);
+                return;
+            }
+
+            bool _isSceneView = this.photonView.IsSceneView;
 			isSceneView.Value = _isSceneView;
 			
 			if (_isSceneView )

@@ -1,23 +1,22 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
 using UnityEngine;
 using Photon.Realtime;
-using Photon.Pun;
 
-namespace HutongGames.PlayMaker.Actions
+namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Remote Event Calls (using Photon RPC under the hood) let you send a Fsm Event to a specific photon player.")]
-	[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W921")]
+	//[HelpUrl("")]
 	public class PhotonViewRpcBroadcastFsmEventToPlayer : FsmStateAction
 	{
 		
 		[RequiredField]
-		[Tooltip("The targeted player name.")]
-		[UIHint(UIHint.Variable)]
-		public FsmString targetPlayerName;
+		[Tooltip("The targeted player")]
+		public PlayerReferenceProperty player;
 		
-		//JFF: TOFIX: SHOULD NOT BE PUBLIC, BUT I NEED THIS TO DISPLAY GLOBAL EVENTS 
 		[Tooltip("Leave to BroadCastAll.")]
 		public FsmEventTarget eventTarget;
 		
@@ -26,15 +25,15 @@ namespace HutongGames.PlayMaker.Actions
 		[UIHint(UIHint.FsmEvent)]
 		public FsmEvent remoteEvent;
 		
-		[Tooltip("Optionnal string data ( will be injected in the Event data. Use 'get Event Info' action to retrieve it)")]
+		[Tooltip("Optional string data ( will be injected in the Event data. Use 'get Event Info' action to retrieve it)")]
 		public FsmString stringData;
-		
+
+		private Player _player;
 		
 		public override void Reset()
 		{
-			targetPlayerName = null;
+			player = null;
 	
-			// JFF: how can I set this silently without a plubic variable? if I set it to private, it doesn't work anymore. maybe I forgot a setting?
 			eventTarget = new FsmEventTarget();
 			eventTarget.target = FsmEventTarget.EventTarget.BroadcastAll;
 			remoteEvent = null;
@@ -43,66 +42,52 @@ namespace HutongGames.PlayMaker.Actions
 
 		public override void OnEnter()
 		{
-			DoREC();
+			ExecuteAction();
 			
 			Finish();
 		}
 
-		void DoREC()
+		void ExecuteAction()
 		{
-			
-			// get the photon proxy for Photon RPC access
-			GameObject go = GameObject.Find("PlayMaker Photon Proxy");
-			
-			if (go == null )
-			{
-				return;
-			}
-			
+
 			if (remoteEvent.Name ==""){
 				return;
 			}
+
+			if (PlayMakerPhotonProxy.Instance==null)
+			{
+				Debug.LogError("PlayMakerPhotonProxy is missing in the scene");
+				return;
+			}
 			
-			// get the proxy component
-			PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
-			if (_proxy==null)
+
+			_player = player.GetPlayer(this);
+
+			if (_player == null)
 			{
 				return;
 			}
 			
-			Player _target = GetPhotonPLayerTarget();
-			if (_target == null){
-				return;
-			}
-		
 			if (! stringData.IsNone && stringData.Value != ""){
-				_proxy.PhotonRpcFsmBroadcastEventWithString(_target,remoteEvent.Name,stringData.Value);
+				PlayMakerPhotonProxy.Instance.PhotonRpcFsmBroadcastEventWithString(_player,remoteEvent.Name,stringData.Value);
 			}else{
-				_proxy.PhotonRpcBroadcastFsmEvent(_target,remoteEvent.Name);
-			}
-			
+				PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEvent(_player,remoteEvent.Name);
+			}	
 		}
-		
-		Player GetPhotonPLayerTarget()
+
+		public override string ErrorCheck()
 		{
-			if ( targetPlayerName.IsNone || targetPlayerName.Value == "")
+			if (eventTarget.target != FsmEventTarget.EventTarget.BroadcastAll)
 			{
- 				return null; 
-			} 
-			
-			string _name = targetPlayerName.Value;
-			
-			foreach(Player _player in PhotonNetwork.PlayerListOthers)
-			{
-				if ( _name.Equals(_player.NickName))
-				{
-					return _player;
-				}
+				return "eventTarget must be set to broadcast";	
 			}
-            return null;
+			
+			if (remoteEvent == null)
+			{
+				return "Remote Event not set";
+			}
+	
+			return string.Empty;
 		}
-		
-		
-		
 	}
 }

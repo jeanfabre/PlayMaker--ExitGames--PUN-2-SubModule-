@@ -24,6 +24,7 @@ using Photon.Pun;
 		Quaternion,
 		Rect,
 		Color,
+        Enum
 	}
 
 
@@ -35,7 +36,7 @@ using Photon.Pun;
 /// TODO: implement runtime or editor time verification that the set up is right. The problem is I can't find a way to get notified about instanciation so I can't run a check on
 /// a gameObject created by an instanciating from the network.
 /// </summary>
-public class PlayMakerPhotonView : MonoBehaviour {
+public class PlayMakerPhotonView : MonoBehaviour, IPunObservable {
 	
 	
 	
@@ -112,9 +113,9 @@ public class PlayMakerPhotonView : MonoBehaviour {
 				variableLOT.Add(varDef);
 			}
 		}
-	
-		// float
-		foreach(FsmFloat fsmFloat in  observed.FsmVariables.FloatVariables)
+
+        // float
+        foreach (FsmFloat fsmFloat in  observed.FsmVariables.FloatVariables)
 		{
 			if (fsmFloat.NetworkSync){
 				Debug.Log ("network synched FsmFloat: '"+fsmFloat.Name +"' in fsm:'" +observed.Fsm.Name+"' in gameObject:'"+observed.gameObject.name+"'");
@@ -210,8 +211,23 @@ public class PlayMakerPhotonView : MonoBehaviour {
 				variableLOT.Add(varDef);
 			}
 		}
-		
-	}// SetUpFsmVariableToSynch
+
+        // enum
+        foreach (FsmEnum fsmEnum in observed.FsmVariables.EnumVariables)
+        {
+            if (fsmEnum.NetworkSync)
+            {
+                Debug.Log("network synched fsmEnum: '" + fsmEnum.Name + "' in fsm:'" + observed.Fsm.Name + "' in gameObject:'" + observed.gameObject.name + "'");
+
+                PlayMakerPhotonFsmVariableDefinition varDef = new PlayMakerPhotonFsmVariableDefinition();
+                varDef.name = fsmEnum.Name;
+                varDef.type = PlayMakerPhotonVarTypes.Enum;
+                varDef.FsmEnumPointer = fsmEnum;
+                variableLOT.Add(varDef);
+            }
+        }
+
+    }// SetUpFsmVariableToSynch
 	 
 	
 	#region serialization
@@ -236,7 +252,7 @@ public class PlayMakerPhotonView : MonoBehaviour {
 	/// <param name='info'>
 	/// Info.
 	/// </param>
-	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 
         if (stream.IsWriting)
@@ -277,7 +293,10 @@ public class PlayMakerPhotonView : MonoBehaviour {
 						us.Serialize(varDef.FsmColorPointer.Value); 
 						stream.SendNext(us.ByteArray); 
 						break;
-				}	
+                    case PlayMakerPhotonVarTypes.Enum:
+                        stream.SendNext(varDef.FsmEnumPointer.RawValue);
+                        break;
+                }	
        		}
 
         }else{	
@@ -316,14 +335,19 @@ public class PlayMakerPhotonView : MonoBehaviour {
 						UnitySerializer uds = new UnitySerializer ((byte[])stream.ReceiveNext());
 						varDef.FsmColorPointer.Value = uds.DeserializeColor();
 						break;
-				}	
+                    case PlayMakerPhotonVarTypes.Enum:
+                        varDef.FsmEnumPointer.RawValue =  stream.ReceiveNext();
+                        break;
+                }	
        		}
 
         }// reading or writing
     }
-	
-	#endregion
-	
+
+
+
+    #endregion
+
 }
 
 /// <summary>
@@ -387,4 +411,9 @@ public class PlayMakerPhotonFsmVariableDefinition
 	/// The fsm color pointer. Set Only if type correspond. This is for convenient caching without loosing the type.
 	/// </summary>
 	public FsmColor FsmColorPointer;
+
+    /// <summary>
+    /// The fsm enum pointer. Set Only if type correspond. This is for convenient caching without loosing the type.
+    /// </summary>
+    public FsmEnum FsmEnumPointer;
 }

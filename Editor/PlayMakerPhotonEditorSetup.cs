@@ -1,51 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
+using HutongGames.PlayMakerEditor;
 using UnityEngine;
 
-using HutongGames.PlayMaker;
-using HutongGames.PlayMakerEditor;
-
-[InitializeOnLoad]
-public class PlayMakerPhotonEditorSetup
+namespace HutongGames.PlayMaker.Pun2.Editor
 {
-
-	static bool _eventAdded;
-
-
-	static PlayMakerPhotonEditorSetup()
+	[InitializeOnLoad]
+	public class PlayMakerPhotonEditorSetup
 	{
-		#if PLAYMAKER_1_9_OR_NEWER
-			FsmEditorSettings.ShowNetworkSync = true;
-		#endif
-
-        if (!Application.isPlaying)
-        {
-            SanitizeGlobalEventSetup();
-        }
-
-	}
-
-
-	public static void SanitizeGlobalEventSetup()
-	{
-		// add global events if needed.
-
-		_eventAdded = FsmEvent.IsEventGlobal(PlayMakerPhotonLUT.PhotonEvents[0]);
+		static bool _eventAdded;
 
 	
-
-			Debug.Log ("SanitizeGlobalEventSetup init?");
-
-		if (!_eventAdded)
+		static PlayMakerPhotonEditorSetup()
 		{
-			Debug.Log ("Creating Photon Events");
-			foreach (string _event in PlayMakerPhotonLUT.PhotonEvents)
+#if PLAYMAKER_1_9_OR_NEWER
+			FsmEditorSettings.ShowNetworkSync = true;
+#endif
+
+			if (!Application.isPlaying)
 			{
-				_eventAdded = PlayMakerUtils.CreateIfNeededGlobalEvent (_event);
+				SanitizeGlobalEventSetup();
+			}
+
+		}
+
+
+		public static void SanitizeGlobalEventSetup()
+		{
+			// add global events if needed.
+
+			_eventAdded = FsmEvent.IsEventGlobal(PlayMakerPunLUT.PhotonEvents[0]);
+
+			Debug.Log("SanitizeGlobalEventSetup init?");
+
+			if (!_eventAdded)
+			{
+				Debug.Log("Creating Photon Events");
+				foreach (string _event in PlayMakerPunLUT.PhotonEvents)
+				{
+					_eventAdded = PlayMakerUtils.CreateIfNeededGlobalEvent(_event);
+				}
 			}
 		}
 	}
-
 }

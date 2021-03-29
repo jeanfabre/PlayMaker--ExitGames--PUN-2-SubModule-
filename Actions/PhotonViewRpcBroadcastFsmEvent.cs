@@ -1,94 +1,82 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
 using UnityEngine;
 using Photon.Pun;
 
-namespace HutongGames.PlayMaker.Actions
+namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Remote Event Calls (using Photon RPC under the hood) let you broadcast a Fsm Event to photon targets ( all players, other players, master).")]
-	[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W920")]
-	public class PhotonViewRpcBroadcastFsmEvent : FsmStateAction
+	[HelpUrl("")]
+	public class PhotonViewRpcBroadcastFsmEvent : PunComponentActionBase<PhotonView>
 	{
-        public RpcTarget rpcTargets;
+		[Tooltip("The rpc targets.")]
+		[ObjectType(typeof(RpcTarget))]
+        public FsmEnum  rpcTargets;
 		
-		// ONLY ACCEPTS BROADCAST OR SELF
+		[Tooltip("Leave to BroadCastAll.")]
 		public FsmEventTarget eventTarget;
 		
 		[RequiredField]
 		[Tooltip("The event you want to send.")]
-		[UIHint(UIHint.FsmEvent)]
 		public FsmEvent remoteEvent;
 		
-		[Tooltip("Optionnal string data ( will be injected in the Event data. Use 'get Event Info' action to retrieve it)")]
+		[Tooltip("Optional string data ( will be injected in the Event data. Use 'get Event Info' action to retrieve it)")]
 		public FsmString stringData;
+
+		
+		RpcTarget _rpcTargets;
 		
 	
 		public override void Reset()
 		{
-			// JFF: how can I set this silently without a public variable? if I set it to private, it doesn't work anymore. maybe I forgot a setting?
 			eventTarget = new FsmEventTarget();
 			eventTarget.target = FsmEventTarget.EventTarget.BroadcastAll;
 			
 			remoteEvent = null;
-			rpcTargets = RpcTarget.All;
+			rpcTargets = null;
 			stringData = null;
 		}
 
 		public override void OnEnter()
 		{
-			DoREC();
+			ExecuteAction();
 			
 			Finish();
 		}
 
-		void DoREC()
+		void ExecuteAction()
 		{
-			
-			// get the photon proxy for Photon RPC access
-			GameObject go = GameObject.Find("PlayMaker Photon Proxy");
-			
-			if (go == null )
-			{
-				return;
-			}
-			
-			
+
 			if (remoteEvent != null && remoteEvent.IsGlobal == false)
 			{ 
 				return;
 			}
 			
-		
-			// get the proxy component
-			PlayMakerPhotonProxy _proxy = go.GetComponent<PlayMakerPhotonProxy>();
-			if (_proxy==null)
+			if (PlayMakerPhotonProxy.Instance==null)
 			{
-				Debug.LogWarning("PlayMakerPhotonProxy is missing");
+				Debug.LogError("PlayMakerPhotonProxy is missing in the scene");
 				return;
 			}
+			
+			_rpcTargets = (RpcTarget)rpcTargets.Value;
 			
 			if (eventTarget.target == FsmEventTarget.EventTarget.BroadcastAll)
 			{
 				
 				if (! stringData.IsNone && stringData.Value != ""){
-					_proxy.PhotonRpcBroacastFsmEventWithString(rpcTargets, remoteEvent.Name,stringData.Value);
+					PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEventWithString(_rpcTargets, remoteEvent.Name,stringData.Value);
 				}else{
-					_proxy.PhotonRpcBroacastFsmEvent(rpcTargets, remoteEvent.Name);
+					PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEvent(_rpcTargets, remoteEvent.Name);
 				}
 			}else{
 				
-				PlayMakerPhotonGameObjectProxy _goProxy = Owner.GetComponent<PlayMakerPhotonGameObjectProxy>();
-				if (_proxy==null)
-				{
-						Debug.LogWarning("PlayMakerPhotonProxy is missing");
-					return;
-				}
-				
 				if (! stringData.IsNone && stringData.Value != ""){
-					_goProxy.PhotonRpcSendFsmEventWithString(rpcTargets, remoteEvent.Name,stringData.Value);
+			//		PlayMakerPhotonProxy.Instance.PhotonRpcSendFsmEventWithString(_rpcTargets, remoteEvent.Name,stringData.Value);
 				}else{
-					_goProxy.PhotonRpcSendFsmEvent(rpcTargets,remoteEvent.Name);
+			//		PlayMakerPhotonProxy.Instance.PhotonRpcSendFsmEvent(_rpcTargets,remoteEvent.Name);
 				}
 			}
 			
@@ -98,17 +86,16 @@ namespace HutongGames.PlayMaker.Actions
 		
 		public override string ErrorCheck()
 		{
+			if (eventTarget.target != FsmEventTarget.EventTarget.BroadcastAll)
+			{
+				return "eventTarget must be set to broadcast";	
+			}
 			
 			if (remoteEvent == null)
 			{
 				return "Remote Event not set";
 			}
-			
-			if (remoteEvent != null && !remoteEvent.IsGlobal)
-			{
-				return "Remote Event must be a global event";
-			}
-
+	
             return string.Empty;
 		}
 		

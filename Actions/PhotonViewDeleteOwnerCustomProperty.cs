@@ -1,16 +1,16 @@
-// (c) Copyright HutongGames, LLC 2010-2015. All rights reserved.
+// (c) Copyright HutongGames, LLC 2010-2019. All rights reserved.
+// Author jean@hutonggames.com
+// This code is licensed under the MIT Open source License
 
-using UnityEngine;
-using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 
-namespace HutongGames.PlayMaker.Actions
+namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
 	[Tooltip("Delete the owner custom property of a GameObject.\n A PhotonView component is required on the gameObject")]
-	[HelpUrl("https://hutonggames.fogbugz.com/default.asp?W1117")]
-	public class PhotonViewDeleteOwnerCustomProperty : FsmStateAction
+	[HelpUrl("")]
+	public class PhotonViewDeleteOwnerCustomProperty : PunComponentActionBase<PhotonView>
 	{
 		
 		[RequiredField]
@@ -22,43 +22,33 @@ namespace HutongGames.PlayMaker.Actions
 		public FsmString customPropertyKey;
 		
 		[Tooltip("Send this event if the custom property was deleted")]
-		public FsmEvent successEvent;
+		public FsmEvent success;
 		
 		[Tooltip("Send this event if the custom property deletion failed")]
-		public FsmEvent failureEvent;
+		public FsmEvent failure;
 		
-		
-		private GameObject go;
-		
-		private PhotonView _networkView;
-		
-		private void _getNetworkView()
-		{
-			GameObject go = Fsm.GetOwnerDefaultTarget(gameObject);
-			if (go == null) 
-			{
-				return;
-			}
-			
-			_networkView =  go.GetComponent<PhotonView>();
-		}
 		
 		public override void Reset()
 		{
+			gameObject = null;
 			customPropertyKey = "My Property";
-			successEvent = null;
-			failureEvent = null;
+			success = null;
+			failure = null;
 		}
 		
 		public override void OnEnter()
 		{
-			_getNetworkView();
-				
+			if (!UpdateCache(Fsm.GetOwnerDefaultTarget(gameObject)))
+			{
+				if (failure != null) Fsm.Event(failure);
+				return;
+			}
+			
 			if (DeleteOwnerProperty())
 			{
-				Fsm.Event(successEvent);	
+				Fsm.Event(success);	
 			}else{
-				Fsm.Event(failureEvent);	
+				Fsm.Event(failure);	
 			}
 			
 			Finish();
@@ -66,12 +56,7 @@ namespace HutongGames.PlayMaker.Actions
 		
 		private bool DeleteOwnerProperty()
 		{
-			if (_networkView==null)
-			{
-				return false;
-			}
-
-			Player _player = _networkView.Owner;
+			Player _player = this.photonView.Owner;
 			if (_player==null)
 			{
 				return false;
@@ -80,6 +65,7 @@ namespace HutongGames.PlayMaker.Actions
 			ExitGames.Client.Photon.Hashtable _prop = new ExitGames.Client.Photon.Hashtable();
 			
 			_prop[customPropertyKey.Value] = null;
+			
 			_player.SetCustomProperties(_prop);
 			
 			return true;
