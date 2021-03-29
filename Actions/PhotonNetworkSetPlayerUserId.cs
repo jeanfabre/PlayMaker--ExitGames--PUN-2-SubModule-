@@ -26,7 +26,7 @@ namespace HutongGames.PlayMaker.Actions
 				return;
 			}
 			
-			PhotonNetwork.LocalPlayer.UserId = userId.Value;
+		//	PhotonNetwork.LocalPlayer.UserId = userId.Value;
 			
 			Finish();
 		}

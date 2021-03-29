@@ -20,7 +20,11 @@ public class PlayMakerPhotonEditorSetup
 			FsmEditorSettings.ShowNetworkSync = true;
 		#endif
 
-		SanitizeGlobalEventSetup ();
+        if (!Application.isPlaying)
+        {
+            SanitizeGlobalEventSetup();
+        }
+
 	}
 
 
