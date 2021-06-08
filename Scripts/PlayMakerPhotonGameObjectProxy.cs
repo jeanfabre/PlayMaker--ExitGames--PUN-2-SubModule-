@@ -2,7 +2,9 @@
 // Author jean@hutonggames.com
 // This code is licensed under the MIT Open source License
 
+using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 
@@ -26,6 +28,9 @@ namespace HutongGames.PlayMaker.Pun2
     {
 
         const string DebugLabelPrefix = "<color=navy>PlayMaker Photon GameObject proxy: </color>";
+
+
+        private static Dictionary<int, List<PlayMakerPhotonGameObjectProxy>> LutByActorNumber = new Dictionary<int, List<PlayMakerPhotonGameObjectProxy>>();
         
         /// <summary>
         /// output in the console activities of the various elements.
@@ -154,6 +159,74 @@ namespace HutongGames.PlayMaker.Pun2
 
         }// sendPhotonInstantiationFsmEvent
 
+        #endregion
+
+        #region RPC
+
+        /// <summary>
+        /// Function typically called from the action "PhotonViewRpcBroadcasFsmEvent" that use RPC to send information about the event to broadcast
+        /// </summary>
+        /// <param name='target'>
+        /// Photon player Target.
+        /// </param>
+        /// <param name='globalEventName'>
+        /// Global Fsm event name to broadcast to the player target
+        /// </param>
+        public void PhotonRpcBroadcastFsmEvent(Player target, string globalEventName)
+        {
+            if (LogMessageInfo)
+            {
+                Debug.Log("RPC to send global Fsm Event:" + globalEventName + " to player:" + target);
+            }
+
+            photonView.RPC("rpc", target, globalEventName);
+        }
+        
+        /// <summary>
+        /// Function typically called from the action "PhotonViewRpcBroadcasFsmEventToPlayer" that use RPC to send information about the event to broadcast
+        /// </summary>
+        /// <param name='target'>
+        /// Photon player Target.
+        /// </param>
+        /// <param name='globalEventName'>
+        /// Global Fsm event name to broadcast to the player target
+        /// </param>
+        /// <param name='stringData'>
+        /// String data to pass with this event. WARNING: this is not supposed to be (nor efficient) a way to synchronize data. This is simply to comply with
+        /// the ability for FsmEvent to include data.
+        /// </param>
+        public void PhotonRpcFsmBroadcastEventWithString(Player target, string globalEventName, string stringData)
+        {
+            if (LogMessageInfo)
+            {
+                Debug.Log("RPC to send string:" + stringData + " with global Fsm Event:" + globalEventName + " to player:" + target.ToString());
+            }
+
+            photonView.RPC("rpc_s", target, globalEventName, stringData);
+        }
+        
+        /// <summary>
+        /// RPC CALL to this photonView
+        /// </summary>
+        /// <param name='globalEventName'>
+        /// Global Fsm event name.
+        /// </param>
+        /// <param name='info'>
+        /// Info.
+        /// </param>
+        [PunRPC]
+        void rpc(string globalEventName, PhotonMessageInfo info) // method name used to be too long :  RPC_PhotonRpcBroadcastFsmEvent
+        {
+            if (LogMessageInfo)
+            {
+                Debug.Log("RPC Received for owner+"+this.photonView.OwnerActorNr+" for global event '"+ globalEventName+ "' info:"+info,this);
+            }
+            
+           // lastMessagePhotonPlayer = info.Sender;
+           
+           PlayMakerUtils.SendEventToGameObject(null,this.gameObject,globalEventName,true);
+        }
+        
         #endregion
 
 

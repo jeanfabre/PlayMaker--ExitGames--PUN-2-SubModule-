@@ -19,7 +19,7 @@ namespace HutongGames.PlayMaker.Pun2
     {
         const string PlayMakerPhotonMenuRoot = "PlayMaker/Addons/Photon Networking/";
 
-        public const float supportedPunVersion = 2.17f;
+        public const float supportedPunVersion = 2.31f;
 
         static readonly string PlayMakerPhotonProxyName = "PlayMaker Photon Proxy";
 

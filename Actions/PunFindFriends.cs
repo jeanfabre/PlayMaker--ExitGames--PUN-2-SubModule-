@@ -3,6 +3,7 @@
 // This code is licensed under the MIT Open source License
 
 using Photon.Pun;
+using Photon.Realtime;
 
 namespace HutongGames.PlayMaker.Pun2.Actions
 {
@@ -38,7 +39,7 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 		
 		public override void OnEnter()
 		{
-            bool _result = PhotonNetwork.FindFriends(friendlist.stringValues);
+			bool _result = PhotonNetwork.FindFriends(friendlist.stringValues);
 
             if (!result.IsNone)
             {

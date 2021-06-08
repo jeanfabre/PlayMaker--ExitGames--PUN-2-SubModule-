@@ -2,13 +2,14 @@
 // Author jean@hutonggames.com
 // This code is licensed under the MIT Open source License
 
+using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
 
 namespace HutongGames.PlayMaker.Pun2.Actions
 {
 	[ActionCategory("Photon")]
-	[Tooltip("Remote Event Calls (using Photon RPC under the hood) let you send a Fsm Event to a specific photon player.")]
+	[Tooltip("Remote Event Calls (using Photon RPC under the hood) let you send a Fsm Event to photonviews owned by a specific photon player.")]
 	//[HelpUrl("")]
 	public class PhotonViewRpcBroadcastFsmEventToPlayer : FsmStateAction
 	{
@@ -67,12 +68,28 @@ namespace HutongGames.PlayMaker.Pun2.Actions
 			{
 				return;
 			}
+
+			foreach (PhotonView photonView in PhotonNetwork.PhotonViewCollection)
+			{
+				if (photonView.Owner == _player)
+				{
+					PlayMakerPhotonGameObjectProxy _playerGameObjectProxy =
+						photonView.gameObject.GetComponent<PlayMakerPhotonGameObjectProxy>();
+
+					if (_playerGameObjectProxy != null)
+					{
+						if (! stringData.IsNone && stringData.Value != ""){
+							_playerGameObjectProxy.PhotonRpcFsmBroadcastEventWithString(_player,remoteEvent.Name,stringData.Value);
+						}else{
+							_playerGameObjectProxy.PhotonRpcBroadcastFsmEvent(_player,remoteEvent.Name);
+						}	
+					}
+				
+					
+				}
+			}
 			
-			if (! stringData.IsNone && stringData.Value != ""){
-				PlayMakerPhotonProxy.Instance.PhotonRpcFsmBroadcastEventWithString(_player,remoteEvent.Name,stringData.Value);
-			}else{
-				PlayMakerPhotonProxy.Instance.PhotonRpcBroadcastFsmEvent(_player,remoteEvent.Name);
-			}	
+		
 		}
 
 		public override string ErrorCheck()

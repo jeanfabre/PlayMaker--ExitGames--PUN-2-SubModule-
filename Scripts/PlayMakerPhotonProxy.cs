@@ -29,7 +29,7 @@ namespace HutongGames.PlayMaker.Pun2
     ///  -- some kind of common class to work with fsmvars instead of duplicate 12 times code for each type of fsmvariable ( or a c# trick)
     /// 
     /// </summary>
-    public class PlayMakerPhotonProxy : MonoBehaviourPunCallbacks
+    public class PlayMakerPhotonProxy : MonoBehaviourPunCallbacks, IPunObservable
     {
 
         public static PlayMakerPhotonProxy Instance;
@@ -625,5 +625,9 @@ namespace HutongGames.PlayMaker.Pun2
 
         #endregion
 
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+           //nothing
+        }
     }
 }
